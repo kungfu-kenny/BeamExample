@@ -21,20 +21,20 @@ pipeline_options = PipelineOptions(
 )
 
 with beam.Pipeline(options=pipeline_options) as pipeline:
-    values = (
+    (
         pipeline
         | beam.io.ReadFromText(file_current, skip_header_lines=True)
         | beam.Map(lambda x: x.split(','))
         | beam.Filter(lambda x: int(x[1]) > 70)
-    )
-
-    values | beam.io.WriteToBigQuery(
-        bigquery.TableReference(
-            projectId=project_id,
-            datasetId=dataset,
-            tableId=table_id
-        ),
-        schema=schema,
-        create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
-        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+        | beam.Map(print)
+        | beam.io.WriteToBigQuery(
+            bigquery.TableReference(
+                projectId=project_id,
+                datasetId=dataset,
+                tableId=table_id
+            ),
+            schema=schema,
+            write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
+        )
     )

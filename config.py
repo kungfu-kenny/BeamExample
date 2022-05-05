@@ -13,9 +13,9 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=os.path.join(
     os.getcwd(), 
     os.getenv('JSON_NAME')
 )
-schema = 'Sex:string, Age:string, Year:string, Month:string, Day:string,'\
-        'Street_Number:string, Birthday:string,Name:string, Surname:string,'\
-        'City:string, Street:string, State:string, State_Voted:string'
+schema = 'Sex:string,Age:string,Year:string,Month:string,Day:string,'\
+        'Street_Number:string,Birthday:string,Name:string,Surname:string,'\
+        'City:string,Street:string,State:string,State_Voted:string'
 
 project_id = os.getenv('PROJECT_ID')
 dataset = os.getenv('DATASET')
