@@ -1,10 +1,7 @@
 import logging
-from re import L
 import apache_beam as beam
 from apache_beam.dataframe import convert
 from apache_beam.io.gcp.internal.clients import bigquery
-import apache_beam.runners.interactive.interactive_beam as ib
-from apache_beam.runners.interactive.interactive_runner import InteractiveRunner
 from config import (
     schema, 
     dataset,
@@ -16,7 +13,7 @@ from config import (
 
 def run(argv=None):
     with beam.Pipeline() as pipeline:
-        values_new = pipeline | beam.dataframe.io.read_csv(file_current)#, skip_header_lines=True)
+        values_new = pipeline | beam.dataframe.io.read_csv(file_current)
         values_send = (   
             convert.to_pcollection(values_new)
             | beam.Map(lambda x: dict(x._asdict()))
