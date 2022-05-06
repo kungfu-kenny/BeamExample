@@ -13,14 +13,54 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=os.path.join(
     os.getcwd(), 
     os.getenv('JSON_NAME')
 )
-schema = 'Sex:string,Age:string,Year:string,Month:string,Day:string,'\
-        'Street_Number:string,Birthday:string,Name:string,Surname:string,'\
-        'City:string,Street:string,State:string,State_Voted:string'
+os.environ["PROJECT"]=os.getenv('PROJECT_ID')
+os.environ["BUCKET"]=os.getenv('BUCKET')
+os.environ['REGION']=os.getenv('REGION')
 
+schema = {
+    'fields': [
+        {
+            'name': 'Sex', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Age', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Year', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Month', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Day', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Street_Number', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Birthday', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Name', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Surname', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'City', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'Street', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'State', 'type': 'STRING', 'mode': 'NULLABLE'
+        }, 
+        {
+            'name': 'State_Voted', 'type': 'STRING', 'mode': 'NULLABLE'
+        }
+    ]
+}
 project_id = os.getenv('PROJECT_ID')
 dataset = os.getenv('DATASET')
 table_id = os.getenv('TABLE_ID')
-
-temp_location = os.getenv("TEMP_LOCATION")
-staging_location=os.getenv("STAGING_LOCATION")
 output=os.getenv('OUTPUT')
