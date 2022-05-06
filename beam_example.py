@@ -1,7 +1,10 @@
 import logging
+from re import L
 import apache_beam as beam
+from apache_beam.dataframe import convert
 from apache_beam.io.gcp.internal.clients import bigquery
-from apache_beam.options.pipeline_options import PipelineOptions
+import apache_beam.runners.interactive.interactive_beam as ib
+from apache_beam.runners.interactive.interactive_runner import InteractiveRunner
 from config import (
     schema, 
     dataset,
@@ -10,33 +13,16 @@ from config import (
     file_current,
 )
 
-def make_dict(value:list):
-    return {
-        "Sex": value[0],
-        "Age": value[1],
-        "Year": value[2],
-        "Month": value[3],
-        "Day": value[4],
-        "Street_Number": value[5],
-        "Birthday": value[6],
-        "Name": value[7],
-        "Surname": value[8],
-        "City": value[9],
-        "Street": value[10],
-        "State": value[11],
-        "State_Voted": value[12],
-    }
 
 def run(argv=None):
     with beam.Pipeline() as pipeline:
-        values = (
-            pipeline
-            | beam.io.ReadFromText(file_current, skip_header_lines=True)
-            | beam.Map(lambda x: x.split(','))
-            | beam.Filter(lambda x: int(x[1]) > 70)
-            | beam.Map(lambda x: make_dict(x))
-        ) 
-        values | beam.io.WriteToBigQuery(
+        values_new = pipeline | beam.dataframe.io.read_csv(file_current)#, skip_header_lines=True)
+        values_send = (   
+            convert.to_pcollection(values_new)
+            | beam.Map(lambda x: dict(x._asdict()))
+            | beam.Filter(lambda x: x["Age"] > 70)
+        )
+        values_send | beam.io.WriteToBigQuery(
             bigquery.TableReference(
                 projectId=project_id,
                 datasetId=dataset,
