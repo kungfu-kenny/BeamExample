@@ -1,8 +1,11 @@
+from email import header
 import logging
 import apache_beam as beam
 from apache_beam.dataframe import convert
 from apache_beam.io.gcp.internal.clients import bigquery
 from config import (
+    header_bool,
+    header_test,
     schema, 
     dataset,
     table_id,
@@ -13,11 +16,14 @@ from config import (
 
 def run(argv=None):
     with beam.Pipeline() as pipeline:
-        values_new = pipeline | beam.dataframe.io.read_csv(file_current)
+        values_new = pipeline | beam.dataframe.io.read_csv(
+            file_current, 
+            names=header_test if header_bool else None
+        )
         values_send = (   
             convert.to_pcollection(values_new)
             | beam.Map(lambda x: dict(x._asdict()))
-            | beam.Filter(lambda x: x["Age"] > 70)
+            | beam.Filter(lambda x: x.get('Age', 0) > 70)
         )
         values_send | beam.io.WriteToBigQuery(
             bigquery.TableReference(

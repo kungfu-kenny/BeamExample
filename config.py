@@ -13,9 +13,6 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=os.path.join(
     os.getcwd(), 
     os.getenv('JSON_NAME')
 )
-os.environ["PROJECT"]=os.getenv('PROJECT_ID')
-os.environ["BUCKET"]=os.getenv('BUCKET')
-os.environ['REGION']=os.getenv('REGION')
 
 schema = {
     'fields': [
@@ -63,4 +60,6 @@ schema = {
 project_id = os.getenv('PROJECT_ID')
 dataset = os.getenv('DATASET')
 table_id = os.getenv('TABLE_ID')
-output=os.getenv('OUTPUT')
+
+header_bool = bool(os.getenv("HEADER_NEW", 0))
+header_test = [k.get("name", '') for k in schema.get('fields', [])] #TODO change here
