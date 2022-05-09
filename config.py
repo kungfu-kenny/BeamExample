@@ -14,6 +14,9 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=os.path.join(
     os.getenv('JSON_NAME')
 )
 
+temp_input = os.getenv('INPUT', '')
+temp_output = os.getenv('OUTPUT', '')
+
 schema = {
     'fields': [
         {
