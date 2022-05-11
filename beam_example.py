@@ -27,8 +27,8 @@ def run(argv=None):
     pipeline_options = PipelineOptions(
             runner=argv.runner,
             project=argv.project,
-            # temp_location = f'gs://{argv.bucket}/temp',
-            # staging_location = f'gs://{argv.bucket}/staging',
+            temp_location = f'gs://{argv.bucket}/temp',
+            staging_location = f'gs://{argv.bucket}/staging',
             region=argv.region
     )
     with beam.Pipeline(options=pipeline_options) as pipeline:
