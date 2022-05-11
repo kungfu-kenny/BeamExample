@@ -5,9 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 folder_current = os.getcwd()
-folder_csv = 'csv'
-file_csv = 'df_vote.csv'
-file_current = os.path.join(folder_current, folder_csv, file_csv)
+file_current = os.path.join(
+    folder_current, 
+    'csv', 
+    'df_vote.csv'
+)
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=os.path.join(
     os.getcwd(), 
@@ -15,7 +17,9 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=os.path.join(
 )
 
 temp_input = os.getenv('INPUT', '')
-temp_output = os.getenv('OUTPUT', '')
+project_id = os.getenv('PROJECT_ID', '')
+dataset = os.getenv('DATASET', '')
+table_id = os.getenv('TABLE_ID', '')
 
 schema = {
     'fields': [
@@ -60,9 +64,3 @@ schema = {
         }
     ]
 }
-project_id = os.getenv('PROJECT_ID')
-dataset = os.getenv('DATASET')
-table_id = os.getenv('TABLE_ID')
-
-header_bool = bool(os.getenv("HEADER_NEW", 0))
-header_test = [k.get("name", '') for k in schema.get('fields', [])] #TODO change here
