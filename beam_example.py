@@ -6,6 +6,7 @@ from apache_beam.io.gcp.internal.clients import bigquery
 from apache_beam.options.pipeline_options import PipelineOptions
 from config import (
     temp_input,
+    bucket,
     schema, 
     dataset,
     table_id,
@@ -106,7 +107,7 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--bucket',
-        required=True,
+        default=bucket,
         help='bucket of the user'
     )
     args, beam_args = parser.parse_known_args()

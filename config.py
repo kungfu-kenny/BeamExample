@@ -20,6 +20,7 @@ temp_input = os.getenv('INPUT', '')
 project_id = os.getenv('PROJECT_ID', '')
 dataset = os.getenv('DATASET', '')
 table_id = os.getenv('TABLE_ID', '')
+bucket = os.getenv('BUCKET', '')
 
 schema = {
     'fields': [
