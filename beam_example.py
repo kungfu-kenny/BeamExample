@@ -30,6 +30,7 @@ def run(argv=None):
             project=argv.project,
             temp_location = f'gs://{argv.bucket}/temp',
             staging_location = f'gs://{argv.bucket}/staging',
+            # template_location=f'gs://{argv.bucket}/templates/test2.json',
             region=argv.region
     )
     with beam.Pipeline(options=pipeline_options) as pipeline:
