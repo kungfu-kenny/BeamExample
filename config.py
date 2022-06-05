@@ -8,7 +8,7 @@ folder_current = os.getcwd()
 file_current = os.path.join(
     folder_current, 
     'csv', 
-    'df_vote.csv'
+    'df_vote.json' # 'df_vote.csv'
 )
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=os.path.join(

@@ -1,3 +1,5 @@
+import os
+import json
 import logging
 import argparse
 import apache_beam as beam
@@ -24,30 +26,56 @@ class ExampleOptions(PipelineOptions):
           help='Path of the file to read from'
         )
 
+def check_input(path:str) -> bool:
+    _, ext = os.path.splitext(path)
+    return ext.lower() == '.csv'
+
+class SplitWords(beam.DoFn):
+  def __init__(self):
+      pass
+
+  def process(self, text):
+    for word in json.loads(text):
+      yield word
+
 def run(argv=None):
     pipeline_options = PipelineOptions(
             runner=argv.runner,
             project=argv.project,
             temp_location = f'gs://{argv.bucket}/temp',
-            staging_location = f'gs://{argv.bucket}/staging',
+            # staging_location = f'gs://{argv.bucket}/staging',
             # template_location=f'gs://{argv.bucket}/templates/test2.json',
             region=argv.region
     )
     with beam.Pipeline(options=pipeline_options) as pipeline:
         user_options = pipeline_options.view_as(ExampleOptions)
-        values_new = (
-            pipeline | beam.dataframe.io.read_csv(
-                user_options.input,
-                header=0
+        if check_input(user_options.input):
+            values_new = (
+                pipeline | beam.dataframe.io.read_csv(
+                    user_options.input,
+                    header=0
+                )
             )
-        )
-        values_send = (   
-            convert.to_pcollection(values_new)
-            | beam.Map(lambda x: dict(x._asdict()))
-            | beam.Map(lambda x: {k:v for k, v in x.items() if k in argv.header_list} if argv.header_list else x)
-            | beam.Filter(lambda x: x.get('Age', 0) > 70)
-            # | beam.Map(print)
-        )
+            values_send = (   
+                convert.to_pcollection(values_new)
+                | beam.Map(lambda x: dict(x._asdict()))
+                | beam.Map(lambda x: {k:v for k, v in x.items() if k in argv.header_list} if argv.header_list else x)
+                | beam.Filter(lambda x: x.get('Age', 0) > 70)
+                # | beam.Map(print)
+            )
+        else:
+            
+            values_new = (
+                pipeline 
+                | beam.io.ReadFromText(user_options.input)
+                | beam.ParDo(SplitWords())
+            )
+            values_send = (
+                values_new 
+                | beam.Map(lambda x: {k:v for k, v in x.items() if k in argv.header_list} if argv.header_list else x)
+                | beam.Filter(lambda x: x.get('Age', 0) > 70)
+                # | beam.Map(print)
+            )
 
         values_send | beam.io.WriteToBigQuery(
             bigquery.TableReference(
